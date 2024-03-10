@@ -68,8 +68,8 @@ app.get('/', async(req, res) => {
 // add new recipe and ingredients
 app.post('/', async (req, res) => {
     try {
-        const { title, ingredients, instructions, dateModified } = req.body
-        const response = await db.queries.addRecipe(title, instructions, dateModified)
+        const { name, ingredients, directions, date } = req.body
+        const response = await db.queries.addRecipe(name, directions, date)
 
         const recipeID = response.recipe_id;
 
@@ -132,8 +132,8 @@ app.get('/recipes/:id', async (req, res) => {
 app.put('/recipes/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const { title, ingredients, instructions, dateModified } = req.body;
-        const response = db.queries.updateRecipe(id, title, instructions, dateModified);
+        const { name, ingredients, directions, date } = req.body;
+        const response = db.queries.updateRecipe(id, name, directions, date);
         
         const deleteRes = await db.queries.deleteIngredients(id);
         // const addRes = await db.queries.addIngredient
@@ -174,10 +174,6 @@ app.delete('/recipes/:id', async (req, res) => {
        res.status(500).send('Internal Server Error: Could not delete recipe');
     }
 });
-
-
-
-
 
 
 app.listen(port, '0.0.0.0') 

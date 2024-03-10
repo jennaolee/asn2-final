@@ -27,16 +27,16 @@ const queries = {
         return res.rows[0];
     },
 
-    addRecipe: async function(title, instructions, dateModified) {
-        const query = 'INSERT INTO recipes(title, instructions, dateModified) VALUES ($1, $2, $3) RETURNING *;'
-        const res = await pool.query(query, [title, instructions, dateModified])
+    addRecipe: async function(name, directions, date) {
+        const query = 'INSERT INTO recipes(name, directions, date) VALUES ($1, $2, $3) RETURNING *;'
+        const res = await pool.query(query, [name, directions, date])
         console.log(res.rows);
         return res.rows[0];
     },
 
-    updateRecipe: async function(id, title, instructions, dateModified) {
-        const query = 'UPDATE recipes SET title = $1, instructions = $2, dateModified = $3 WHERE recipe_id = $4 RETURNING *'
-        const res = await pool.query(query,  [title, instructions, dateModified, id])
+    updateRecipe: async function(id, name, directions, date) {
+        const query = 'UPDATE recipes SET name = $1, directions = $2, date = $3 WHERE recipe_id = $4 RETURNING *'
+        const res = await pool.query(query,  [name, directions, date, id])
         return res.rows[0];
     },
 
@@ -59,7 +59,7 @@ const queries = {
     },
     
     init: async function() {
-        const recipeQuery = 'CREATE TABLE IF NOT EXISTS recipes (recipe_id SERIAL PRIMARY KEY,title VARCHAR(255) NOT NULL,instructions TEXT NOT NULL,dateModified TEXT NOT NULL)'
+        const recipeQuery = 'CREATE TABLE IF NOT EXISTS recipes (recipe_id SERIAL PRIMARY KEY,name VARCHAR(255) NOT NULL,directions TEXT NOT NULL,date TEXT NOT NULL)'
         const ingredientQuery = 'CREATE TABLE IF NOT EXISTS ingredients(ingredient_id SERIAL PRIMARY KEY, recipe_id INT REFERENCES recipes(recipe_id) ON DELETE CASCADE, name VARCHAR(255) NOT NULL)'
         const recipeRes = await pool.query(recipeQuery)
         const ingredientRe = await pool.query(ingredientQuery)
