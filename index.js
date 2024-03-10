@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 const cors = require('cors')
-const waitOn = require('wait-on');
+// const waitOn = require('wait-on');
 
 
 // const { Pool } = require('pg')
@@ -17,7 +17,7 @@ const waitOn = require('wait-on');
 const port = 8080
 
 const db = require('./db')
-const helper = require('./helper')
+// const helper = require('./helper')
 
 
 
@@ -54,15 +54,19 @@ app.get('/', async(req, res) => {
     // db.queries.init()
     // res.send('db was initiated!')
     try {
-        db.queries.init();
-        res.send('Tables created successfully');
+        await db.queries.init();
+        const response = await db.queries.getRecipes()
+        res.json(response)
+        // res.send('Tables created successfully');
     } catch (error) {
-        res.status(500).send('Error creating tables:', error);
+        console.error(error);
+        res.status(500).send('Internal Server Error: Could not get all recipes');
+        // res.status(500).send('Error creating tables:', error);
     }
 })
 
 // add new recipe and ingredients
-app.post('/recipes', async (req, res) => {
+app.post('/', async (req, res) => {
     try {
         const { title, ingredients, instructions, dateModified } = req.body
         const response = await db.queries.addRecipe(title, instructions, dateModified)
@@ -86,7 +90,7 @@ app.post('/recipes', async (req, res) => {
 
         // const ingredientValues = ingredients.map(ingredient => [recipeId, ingredient.name]);
         // const res = await db.addIngredient(ingredientValues);
-        res.send(response);
+        res.json(response);
     } catch (error) {
         console.error(error);
         res.status(500).send("Internal Server Error: Could not add recipe")
@@ -95,16 +99,16 @@ app.post('/recipes', async (req, res) => {
 })
 
 // get all recipes
-app.get('/recipes', async (req, res) => {
-    try {
-        const response = await db.queries.getRecipes()
-        // res.json(response.rows);
-        res.send(response)
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error: Could not get all recipes');
-    }
-})
+// app.get('/recipes', async (req, res) => {
+//     try {
+//         const response = await db.queries.getRecipes()
+//         // res.json(response.rows);
+//         res.json(response)
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).send('Internal Server Error: Could not get all recipes');
+//     }
+// })
 
 // get a recipe by ID
 app.get('/recipes/:id', async (req, res) => {
@@ -117,7 +121,7 @@ app.get('/recipes/:id', async (req, res) => {
        console.log(response)
        console.log(result)
 
-       res.send(result);
+       res.json(result);
     } catch (error) {
        console.error(error);
        res.status(500).send('Internal Server Error: Could not recipe');
@@ -145,7 +149,7 @@ app.put('/recipes/:id', async (req, res) => {
             var result = db.queries.addIngredient(id, ingredient);
         }
 
-        res.send(response);
+        res.json(response);
     } catch (error) {
        console.error(error);
        res.status(500).send('Internal Server Error: Could not update recipe');
@@ -164,7 +168,7 @@ app.delete('/recipes/:id', async (req, res) => {
 
 
 
-        res.send(response);
+        res.json(response);
     } catch (error) {
        console.error(error);
        res.status(500).send('Internal Server Error: Could not delete recipe');
