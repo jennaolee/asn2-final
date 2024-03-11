@@ -14,7 +14,7 @@ const cors = require('cors')
 //     password: 'root'
 // })
 
-const port = 8080
+const port = 3000
 
 const db = require('./db')
 // const helper = require('./helper')
@@ -175,7 +175,5 @@ app.delete('/recipes/:id', async (req, res) => {
     }
 });
 
-
 app.listen(port, '0.0.0.0') 
 console.log(`Running on http://0.0.0.0:${port}`)
-// InitDB()
